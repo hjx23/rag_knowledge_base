@@ -7,7 +7,7 @@ from mini4 import chunk_text, get_answer
 app = FastAPI()
 
 # ============ 知识库的原始文档 ============
-with open("./docs/test.txt", encoding= "utf-8") as f:
+with open("./docs/test.txt", encoding="utf-8") as f:
     DOCUMENT = f.read()
 
 # ============ 建索引：只在服务启动时做一次 ============
@@ -37,18 +37,26 @@ def read_root():
 @app.get("/ask")
 def ask(question: str):
     # 1. 问题转向量
-    q_vec = get_embedding(question)
+    try:
+        q_vec = get_embedding(question)
 
-    # 2. 检索最相关的片段
-    results = collection.query(
-        query_embeddings=[q_vec],
-        n_results=3,
-    )
-    sources = results["documents"][0]
+        # 2. 检索最相关的片段
+        results = collection.query(
+            query_embeddings=[q_vec],
+            n_results=3,
+        )
+        sources = results["documents"][0]
 
-    # 3. 拼成 context，交给对话模型生成答案
-    context = "\n".join(sources)
-    answer = get_answer(question, context)
+        # 3. 拼成 context，交给对话模型生成答案
+        context = "\n".join(sources)
+        answer = get_answer(question, context)
+    except Exception as e:
+        print(f"[ask 失败]{type(e).__name__}: {e}")
+        return {
+            "question": question,
+            "answer": "服务暂时不可用",
+            "sources": [],
+        }
 
     # 4. 打包成字典返回
     return {
