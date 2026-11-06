@@ -13,8 +13,15 @@
         var btn=document.getElementById("askBtn");
         var answerBox=document.getElementById("answer");
         btn.onclick=function () {
-            var q=inputBox.value;
-            answerBox.innerText=q;
+            var q = inputBox.value;
+            
+            fetch("/ask?question=" + q)
+            .then(function(r){
+                return r.json();
+            })
+            .then(function(data){
+                answerBox.innerText = data.answer;
+            });
         };
     </script>
 </body>

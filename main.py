@@ -3,6 +3,7 @@ from fastapi import FastAPI
 
 from mini1 import get_embedding
 from mini4 import chunk_text, get_answer
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -30,7 +31,7 @@ else:
 # ============ 接口 1：健康检查（验证服务活着）============
 @app.get("/")
 def read_root():
-    return {"message": "hello"}
+    return FileResponse("./index.html")
 
 
 # ============ 接口 2：问答 ============
