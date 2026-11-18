@@ -14,6 +14,7 @@ model_config.py
 
 # 向量库（Chroma 本地数据，mini3 会生成）
 chroma_db/
+chroma_lc/
 data/
 
 # 日志
